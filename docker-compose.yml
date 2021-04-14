@@ -1,0 +1,44 @@
+version: "2"
+services:
+  app:
+    image: php:5.3-apache
+    depends_on:
+      - db
+    ports:
+      - 8016:80
+    volumes:
+      - ./www/html:/var/www/html
+    restart: unless-stopped
+
+  db:
+    image: mysql:5.5
+    environment:
+      - MYSQL_ROOT_PASSWORD=examplepass
+      - MYSQL_DATABASE=exampledb
+      - MYSQL_USER=exampleuser
+      - MYSQL_PASSWORD=examplepass
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - 3316:3306 # optional
+    restart: unless-stopped
+
+  db-admin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - 8116:80
+    links:
+      - db:db
+    restart: unless-stopped
+
+  editor:
+    image: codercom/code-server
+    ports:
+      - 8216:8080
+    volumes:
+      - ./www/html:/home/coder/project
+    environment:
+      - PASSWORD=codepass
+    restart: unless-stopped
