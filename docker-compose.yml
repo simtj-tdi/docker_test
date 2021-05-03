@@ -1,11 +1,16 @@
-version: "2"
+version: "3"
+
 services:
   app:
     image: php:5.3-apache
     depends_on:
       - db
     ports:
-      - 8016:80
+      - "8016:80"
+    stdin_open: true
+    tty: true      
+    links:
+      - db
     volumes:
       - ./www/html:/var/www/html
     restart: unless-stopped
@@ -20,7 +25,7 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     ports:
-      - 3316:3306 # optional
+      - "9906:3306"
     restart: unless-stopped
 
   db-admin:
@@ -28,7 +33,7 @@ services:
     depends_on:
       - db
     ports:
-      - 8116:80
+      - "8116:80"
     links:
       - db:db
     restart: unless-stopped
@@ -36,7 +41,7 @@ services:
   editor:
     image: codercom/code-server
     ports:
-      - 8216:8080
+      - "8216:8080"
     volumes:
       - ./www/html:/home/coder/project
     environment:
